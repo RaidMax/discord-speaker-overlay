@@ -41,7 +41,7 @@ class Configuration {
 		return this._configList[guildId];
 	}
 	
-	addProperty(property, value, guildId) {
+	setProperty(property, value, guildId) {
 		this._configList[guildId][property] = value;
 		this.write();
 	}
@@ -56,6 +56,7 @@ class Configuration {
 	
 	setToken(token) {
 		this._configList['token'] = token;
+		this.write();
 	}
 }
 

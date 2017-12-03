@@ -3,21 +3,12 @@ const configuration = require('./helpers/configuration.js');
 const fileSystem = require('fs');
 const readline = require('readline');
 const express = require('express');
+const pkg = require('./package.json');
 
 const client = new discord.Client();
 const config = new configuration('./configuration.json');
 
 let speakers = {};
-
-/*function writeSpeakers() {
-  let file = fileSystem.createWriteStream("discord_speakers.txt");
-  file.once('open', function(fd) {
-    speakers.forEach(function(member) {
-      file.write(`🔊 ${member.displayName}\r\n`);
-    });
-    file.end();
-  });
-}*/
 
 client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
   
@@ -76,7 +67,7 @@ client.on('ready', () => {
 		});
 		
 		rl.question('Enter id of the discord member to follow: ', (id) => {
-			config.addProperty('following', id, guild.id);
+			config.setProperty('following', id, guild.id);
 			rl.close();
 		});
 	  }
@@ -124,4 +115,4 @@ app.get('/api/speakers/:id', function(req, res) {
 	res.end(JSON.stringify(sp));
 });
 
-let server = app.listen(80, '127.0.0.1', function(){});
+let server = app.listen(pkg.config.port, pkg.config.hostname, function(){});

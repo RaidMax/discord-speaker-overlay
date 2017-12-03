@@ -15,5 +15,15 @@
   "bugs": {
     "url": "https://github.com/RaidMax/discord-speaker-overlay/issues"
   },
-  "homepage": "https://github.com/RaidMax/discord-speaker-overlay#readme"
+  "homepage": "https://github.com/RaidMax/discord-speaker-overlay#readme",
+  "dependencies": {
+	"discord.js" : ">=11.2.1",
+	"express" : ">=4.16.2",
+	"ffmpeg-binaries" : ">=3.2.2",
+	"opusscript" : ">=0.0.4"
+  },
+  "config" : {
+	"hostname" : "localhost",
+	"port" : "80"
+  }
 }
