@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<style>
+			body { 
+				color: rgba(255, 255, 255, 0.8); 
+				font-family: "Segoe UI"; 
+				font-weight: bold;
+				font-size: 32pt;
+				margin-left: 50px;
+			}
+			
+			.following {
+				position: absolute;
+				margin-left: -37px;
+				-webkit-text-stroke: 2px rgba(0, 0, 0, 0.5);
+			}
+			
+			#speakers .speaker {
+				-webkit-text-stroke: 2px rgba(0, 0, 0, 0.5);
+				padding: 0 10px;
+			}
+		</style>
+		<script>
+			function loadSpeakers() {
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						const speakers = JSON.parse(xhttp.responseText);
+						let html = '';
+						speakers.forEach(function(speaker) {
+							let followDiv = (speaker.following) ? `<div class="following">★</div>` : '';
+							html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
+						});
+						document.getElementById('speakers').innerHTML = html;
+					}
+				};
+				xhttp.open("GET", "http://127.0.0.1/api/speakers/121782130740035586", true);
+				xhttp.send(); 
+			}
+			
+			setInterval(function() { loadSpeakers(); }, 500);
+		</script>
+	</head>
+	<body>
+		<div id="speakers">
+		</div>
+	</body>
+</html>
