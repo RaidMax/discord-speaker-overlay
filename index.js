@@ -83,7 +83,7 @@ client.on('ready', () => {
 					console.log(`${following.displayName} is not connected to a voice channel`);
 				}
 				else {
-					console.log(`no members are being followed on ${guild.name}`);
+					console.log(`No members are being followed on ${guild.name}`);
 				}
 				return false;
 			}
@@ -130,7 +130,7 @@ app.get('/api/speakers/:guildid', function(req, res) {
 	if (sp == undefined) {
 		resp.error = response.errors[1];
 	}
-	else if (config.getProperty('following', req.params.id) == undefined) {
+	else if (config.getProperty('following', req.params.guildid) == undefined) {
 		resp.error = response.errors[4];
 	}
 	
@@ -163,7 +163,7 @@ app.get('/api/speakers/:guildid/follow/:memberid', function(req, res) {
 	if (resp.error == response.errors[0]) {
 		resp.data = `now following ${member.displayName}`;
 		config.setProperty('following', member.id, guild.id);
-		console.log(`now following ${$member.displayName} on ${guildname}`);
+		console.log(`Now following ${$member.displayName} on ${guildname}`);
 	}
 	
 	res.end(JSON.stringify(resp));

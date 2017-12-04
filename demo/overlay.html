@@ -26,13 +26,20 @@
 				var xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
 					if (this.readyState == 4 && this.status == 200) {
-						const speakers = JSON.parse(xhttp.responseText);
-						let html = '';
-						speakers.forEach(function(speaker) {
-							let followDiv = (speaker.following) ? `<div class="following">★</div>` : '';
-							html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
-						});
-						document.getElementById('speakers').innerHTML = html;
+						const speakerResponse = JSON.parse(xhttp.responseText);
+						if (speakerResponse.error.code != 0) {
+							console.log(speakerResponse.error.message);
+							document.getElementById('speakers').innerHTML = `<div><span class="speaker">${speakerResponse.error.message}</span></div>`;
+						}
+						else
+						{
+							let html = '';
+							speakerResponse.forEach(function(speaker) {
+								let followDiv = (speaker.following) ? `<div class="following">★</div>` : '';
+								html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
+							});
+							document.getElementById('speakers').innerHTML = html;
+						}
 					}
 				};
 				xhttp.open("GET", "http://127.0.0.1/api/speakers/121782130740035586", true);
