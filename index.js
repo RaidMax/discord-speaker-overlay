@@ -1,5 +1,6 @@
 ﻿const discord = require('discord.js');
 const configuration = require('./helpers/configuration.js');
+const response = require('./helpers/response.js');
 const fileSystem = require('fs');
 const readline = require('readline');
 const express = require('express');
@@ -55,7 +56,7 @@ client.on('guildMemberSpeaking', (member, speaking) => {
 
 client.on('ready', () => {
   console.log('Connected...');
-  
+  client.user.setGame('Listening to your thoughts');
   // make sure all guild configs are active
   client.guilds.forEach(function(guild) {
 	  speakers[guild.id] = [];
@@ -73,16 +74,26 @@ client.on('ready', () => {
 	  }
 	  else {
 		  const following = guild.members.find(m => m.id == config.getProperty('following', guild.id));
-		  if (following.voiceChannel != undefined) {
+		  if (following != null && following.voiceChannel != undefined) {
 			following.voiceChannel.join()
 				.then(connection => {})
 				.catch(console.error);
 			} else {
-				console.log(`${following.displayName} is not connected to a voice channel`);
+				if (following != null) {
+					console.log(`${following.displayName} is not connected to a voice channel`);
+				}
+				else {
+					console.log(`no members are being followed on ${guild.name}`);
+				}
 				return false;
 			}
 	  }
   });
+});
+
+client.on('guildCreate', (guild) => {
+	config.addGuild(guild);
+	console.log(`joined guild ${guild.name}`);
 });
 
 function run() {
@@ -108,11 +119,54 @@ setTimeout(run, 1000);
 
 let app = express();
 
-app.get('/api/speakers/:id', function(req, res) {
+app.get('/api/speakers/:guildid', function(req, res) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	const sp = speakers[req.params.id];
-	res.end(JSON.stringify(sp));
+	
+	const sp = speakers[req.params.guildid];
+	const resp = response.generatePayload(speakers[req.params.guildid]);
+	resp.error = response.errors[0];
+	
+	if (sp == undefined) {
+		resp.error = response.errors[1];
+	}
+	else if (config.getProperty('following', req.params.id) == undefined) {
+		resp.error = response.errors[4];
+	}
+	
+	res.end(JSON.stringify(resp));
+});
+
+app.get('/api/speakers/:guildid/follow/:memberid', function(req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	
+	const guild = client.guilds.find(g => g.id == req.params.guildid);
+	const member = (guild == undefined) ? undefined :
+		guild.members.find(g => g.id == req.params.memberid);
+	let isFollowing = (member != undefined);
+	if (isFollowing) {
+		isFollowing = config.getProperty('following', member.guild.id) != undefined;
+	}
+	const resp = response.generatePayload();
+	resp.error = response.errors[0];
+	
+	if (guild == undefined) {
+		resp.error = response.errors[1];
+	}
+	else if (member == undefined) {
+		resp.error = response.errors[2];
+	}
+	else if (isFollowing) {
+		resp.error = response.errors[3];
+	}
+	if (resp.error == response.errors[0]) {
+		resp.data = `now following ${member.displayName}`;
+		config.setProperty('following', member.id, guild.id);
+		console.log(`now following ${$member.displayName} on ${guildname}`);
+	}
+	
+	res.end(JSON.stringify(resp));
 });
 
 let server = app.listen(pkg.config.port, pkg.config.hostname, function(){});
