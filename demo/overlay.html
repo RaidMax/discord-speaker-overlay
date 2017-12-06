@@ -34,7 +34,7 @@
 						else
 						{
 							let html = '';
-							speakerResponse.forEach(function(speaker) {
+							speakerResponse.data.speakers.forEach(function(speaker) {
 								let followDiv = (speaker.following) ? `<div class="following">★</div>` : '';
 								html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
 							});
