@@ -12,11 +12,18 @@ const config = new configuration('./configuration.json');
 let voiceChannels = [];
 
 client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
+	
+  // leaving channel while still talking 
+  if (newMemberState.voiceChannel == undefined
+		&& voiceChannels[newMemberState.guild.id] != undefined) { 
+	voiceChannels[newMemberState.guild.id].speakers = voiceChannels[newMemberState.guild.id].speakers.filter(function(c) {
+      return c.id != newMemberState.id;
+	});
+  }
+  
   if (newMemberState.id != config.getProperty('following', newMemberState.guild.id)) {
     return false;
   }
-  
-  // todo: leaving channel while still talking doesn't remove the speaking member
 
   if (newMemberState.voiceChannel != undefined) {
     if ((oldMemberState.voiceChannel != undefined &&
@@ -70,8 +77,6 @@ client.on('guildMemberSpeaking', (member, speaking) => {
   if (!validChannel) {
 	  return false;
   }
-  
-  console.log('speaking');
   
   if (speaking) {
     voiceChannels[member.guild.id].speakers.push({
@@ -205,7 +210,7 @@ app.get('/api/speakers/:guildid/follow/:memberid', function(req, res) {
 	if (resp.error == response.errors[0]) {
 		resp.data = `now following ${member.displayName}`;
 		config.setProperty('following', member.id, guild.id);
-		console.log(`Now following ${$member.displayName} on ${guildname}`);
+		console.log(`Now following ${member.displayName} on ${guildname}`);
 	}
 	
 	res.end(JSON.stringify(resp));

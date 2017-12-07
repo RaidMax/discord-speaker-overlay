@@ -5,6 +5,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Config
+configuration.json
+
 # Runtime data
 pids
 *.pid
