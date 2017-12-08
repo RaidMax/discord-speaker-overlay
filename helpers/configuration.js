@@ -32,6 +32,22 @@ class Configuration {
 		fileSystem.writeFile(this._fileName, configJSON, 'utf8', this._writeCallback);
 	}
 	
+	addMember(member) {
+		this._configList[member.id] = {
+			id: member.id,
+			added: new Date()
+		};
+		this.write();
+	}
+	
+	getMember(memberId) {
+		return this._configList[memberId];
+	}
+	
+	getMembers() {
+		return this._configList
+	}
+	
 	addGuild(guild) {
 		this._configList[guild.id] = { id: guild.id };
 		this.write();

@@ -10,82 +10,98 @@ const client = new discord.Client();
 const config = new configuration('./configuration.json');
 
 let voiceChannels = [];
+let activeMembers = [];
 
 client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
-	
-  // leaving channel while still talking 
-  if (newMemberState.voiceChannel == undefined
-		&& voiceChannels[newMemberState.guild.id] != undefined) { 
-	voiceChannels[newMemberState.guild.id].speakers = voiceChannels[newMemberState.guild.id].speakers.filter(function(c) {
-      return c.id != newMemberState.id;
-	});
-  }
-  
-  if (newMemberState.id != config.getProperty('following', newMemberState.guild.id)) {
-    return false;
-  }
-
-  if (newMemberState.voiceChannel != undefined) {
-    if ((oldMemberState.voiceChannel != undefined &&
-        oldMemberState.voiceChannel.id != newMemberState.voiceChannel.id) ||
-      oldMemberState.voiceChannel == undefined) {
-	  // follow member is switching channels
-      if (oldMemberState.voiceChannel != undefined) { 
-		// remove the old channel
-		voiceChannels = voiceChannels.filter(function(channel) {
-			return channel.id != oldMemberState.voiceChannel.id;
-		});
-		oldMemberState.voiceChannel.leave();
-      }
-
-	  // user is joining a new channel
-      newMemberState.voiceChannel.join()
-        .then(connection => {
-          console.log(`Followed ${newMemberState.displayName} to ${newMemberState.voiceChannel.name}`);
-		  voiceChannels[newMemberState.guild.id] = {
-			  id: newMemberState.voiceChannel.id,
-			  speakers: []
-		  };
-		  return connection;
-        })
-		.catch(reason => {
-			console.log(reason);
-		});
+  // no member was found
+  if (activeMembers[newMemberState.id] == undefined) {
+    // see if member is registered
+    if (config.getMember(newMemberState.id) != undefined) {
+      activeMembers[newMemberState.id] = {
+        id: newMemberState.id,
+        channelId: 0
+      };
+      console.log(`${newMemberState.displayName} is now active`);
     }
+  }
+  // recheck if member was added
+  if (activeMembers[newMemberState.id] != undefined) {
+    // not previously connected to a voice channel
+    if (oldMemberState.voiceChannel == undefined) {
+      // connecting to a new voice channel
+      if (newMemberState.voiceChannel != undefined) {
+        voiceChannels[newMemberState.voiceChannel.id] = {
+          id: newMemberState.voiceChannel.id,
+          speakers: []
+        };
+        // set voice channel id for member
+        activeMembers[newMemberState.id].channelId = newMemberState.voiceChannel.id;
+        console.log(`${newMemberState.displayName} connected to ${newMemberState.voiceChannel.name}`);
+      }
+    }
+    // previously connected to a voice channel 
+    else {
+      // switching voice channels
+      if (newMemberState.voiceChannel != undefined) {
+        // no other registered member is in the channel
+        if (Object.keys(activeMembers).find(m => activeMembers[m].channelId == oldMemberState.voiceChannel.id) == undefined) {
+          // remove the old voice channel
+          voiceChannels = voiceChannels.filter(function(channel) {
+            return channel.id != oldMemberState.voiceChannel.id;
+          });
+        }
+        // add new monitored voice channel
+        voiceChannels[newMemberState.voiceChannel.id] = {
+          id: newMemberState.voiceChannel.id,
+          speakers: []
+        };
+        // set voice channel id for member
+        activeMembers[newMemberState.id].channelId = newMemberState.voiceChannel.id;
+        console.log(`${newMemberState.displayName} switched to ${newMemberState.voiceChannel.name}`);
+      }
+      // disconnecting from existing voice channel
+      else {
+        // no other registered member is in the channel
+        if (Object.keys(activeMembers).find(m => activeMembers[m].channelId == oldMemberState.voiceChannel.id) == undefined) {
+          // remove the old voice channel
+          voiceChannels = voiceChannels.filter(function(channel) {
+            return channel.id != oldMemberState.voiceChannel.id;
+          });
+        }
 
-   // follow member is leaving a channel
-  } else {
-    if (oldMemberState.voiceChannel != undefined) {
-      console.log(`${newMemberState.displayName} has left the voice channel, so disconnecting`);
-	  voiceChannels = voiceChannels.filter(function(channel) {
-			return channel.id != oldMemberState.voiceChannel.id;
-	  });
-	  oldMemberState.voiceChannel.leave();
+        activeMembers = activeMembers.filter(function(member) {
+          return member.id != newMemberState.id;
+        });
+
+        console.log(`${newMemberState.displayName} disconnected from ${oldMemberState.voiceChannel.name}`);
+      }
     }
   }
 });
 
 client.on('guildMemberSpeaking', (member, speaking) => {
-  // make sure the voice channel is one we're following
   let validChannel = false;
-  Object.keys(voiceChannels).forEach(function(c) {
-	  if (voiceChannels[member.guild.id].id == member.voiceChannel.id) {
-		  validChannel = true;
-	  }
+
+  Object.keys(voiceChannels).forEach(function(id) {
+    if (id == member.voiceChannel.id) {
+      validChannel = true;
+    }
   });
-  
   if (!validChannel) {
-	  return false;
+    return false;
   }
-  
+
+  // set speaking status to voice channel
   if (speaking) {
-    voiceChannels[member.guild.id].speakers.push({
-		id: member.id,
-		name: member.displayName,
-		following: member.id == config.getProperty('following', member.guild.id)
-	});
+    voiceChannels[member.voiceChannel.id].speakers.push({
+      id: member.id,
+      name: member.displayName,
+      following: config.getMember(member.guild.id) != undefined
+    });
+    // remove their speaking status
+    // todo: a faster way
   } else {
-	  voiceChannels[member.guild.id].speakers = voiceChannels[member.guild.id].speakers.filter(function(c) {
+    voiceChannels[member.voiceChannel.id].speakers = voiceChannels[member.voiceChannel.id].speakers.filter(function(c) {
       return c.id != member.id
     });
   }
@@ -94,126 +110,120 @@ client.on('guildMemberSpeaking', (member, speaking) => {
 client.on('ready', () => {
   console.log('Connected...');
   client.user.setGame('Listening to your thoughts');
-  // make sure all guild configs are active
+
   client.guilds.forEach(function(guild) {
-	  if (config.getGuild(guild.id) == undefined) {
-		config.addGuild(guild);
-		const rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout
-		});
-		
-		rl.question('Enter id of the discord member to follow: ', (id) => {
-			config.setProperty('following', id, guild.id);
-			rl.close();
-		});
-	  }
-	  else { 
-		  const following = guild.members.find(m => m.id == config.getProperty('following', guild.id));
-		  
-		  if (following != null) {
-			if (following.voiceChannel == null) {
-				console.log(`${following.displayName} is not connected to a voice channel`);
-			}
-			else {
-				/****************************************/
-				following.voiceChannel.join()
-				.then(connection => {
-				  console.log(`Followed ${following.displayName} to ${following.voiceChannel.name}`);
-				  voiceChannels[following.guild.id] = {
-					  id: following.voiceChannel.id,
-					  speakers: []
-				  };
-				  return connection;
-				})
-				.catch(reason => {
-					console.log(reason);
-				});
-				/********************************************/
-			}
-		  }
-		  else {
-			  console.log(`No members are being followed on ${guild.name}`);
-		  }
-	  }
+    joinDefaultChannel(guild);
   });
 });
 
 client.on('guildCreate', (guild) => {
-	config.addGuild(guild);
-	console.log(`joined guild ${guild.name}`);
+  config.addGuild(guild);
+  console.log(`joined guild ${guild.name}`);
 });
 
+function joinDefaultChannel(guild) {
+  // todo: where is the default voice channel?
+  let channelToJoin = guild.afkChannel;
+
+  if (channelToJoin != null) {
+    channelToJoin.join()
+      .then(connection => {
+        console.log(`Joining default or afk channel ${channelToJoin.name}`);
+        voiceChannels[channelToJoin.id] = {
+          id: channelToJoin.id,
+          speakers: []
+        };
+        return connection;
+      })
+      .catch(reason => {
+        console.error(reason);
+      });
+  } else {
+    console.error(`No available channels to join in ${guild.name}`);
+  }
+}
+
+// start the bot 
 function run() {
-	let token = config.getToken();
-	if (token) {
-		client.login(token);
-	}
-	else {
-		const rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout
-		});
-		
-		rl.question('Enter your discord api token: ', (tk) => {
-			config.setToken(tk);
-			rl.close();
-			run();
-		});
-	}
+  let token = config.getToken();
+  if (token) {
+    client.login(token);
+  } else {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    rl.question('Enter your discord api token: ', (tk) => {
+      config.setToken(tk);
+      rl.close();
+      run();
+    });
+  }
 }
 
 setTimeout(run, 1000);
 
 let app = express();
 
-app.get('/api/speakers/:guildid', function(req, res) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	const sp = voiceChannels[req.params.guildid];
-	const resp = response.generatePayload(sp);
-	resp.error = response.errors[0];
-	
-	if (sp == undefined) {
-		resp.error = response.errors[1];
-	}
-	else if (config.getProperty('following', req.params.guildid) == undefined) {
-		resp.error = response.errors[4];
-	}
-	
-	res.end(JSON.stringify(resp));
+// register member to be followed
+app.get('/api/register/:memberid', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  let member = undefined;
+  const resp = response.generatePayload();
+
+  if (config.getMember(req.params.memberid) != undefined) {
+    resp.error = response.errors[3];
+  } else {
+    // find member in guilds
+    client.guilds.some(function(guild) {
+      if ((member = guild.members.find(m => m.id == req.params.memberid)) != undefined) {
+        return true;
+      }
+      return false;
+    });
+  }
+  if (member != undefined) {
+    // add them to the saved config
+    config.addMember(member);
+    resp.error = response.errors[0];
+    resp.data = `now following ${member.displayName}`;
+    console.log(resp.data);
+  } else if (resp.error == response.errors[0]) {
+    resp.error = response.errors[5];
+  }
+
+  res.end(JSON.stringify(resp));
 });
 
-app.get('/api/speakers/:guildid/follow/:memberid', function(req, res) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "X-Requested-With");
-	
-	const guild = client.guilds.find(g => g.id == req.params.guildid);
-	const member = (guild == undefined) ? undefined :
-		guild.members.find(g => g.id == req.params.memberid);
-	let isFollowing = (member != undefined);
-	if (isFollowing) {
-		isFollowing = config.getProperty('following', member.guild.id) != undefined;
-	}
-	const resp = response.generatePayload();
-	resp.error = response.errors[0];
-	
-	if (guild == undefined) {
-		resp.error = response.errors[1];
-	}
-	else if (member == undefined) {
-		resp.error = response.errors[2];
-	}
-	else if (isFollowing) {
-		resp.error = response.errors[3];
-	}
-	if (resp.error == response.errors[0]) {
-		resp.data = `now following ${member.displayName}`;
-		config.setProperty('following', member.id, guild.id);
-		console.log(`Now following ${member.displayName} on ${guildname}`);
-	}
-	
-	res.end(JSON.stringify(resp));
+// get the overlay info
+app.get('/api/member/:memberid/channel', function(req, res) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  let member = config.getMember(req.params.memberid);
+  let channel = undefined;
+
+  const resp = response.generatePayload();
+
+  if (member == undefined) {
+    resp.error = response.errors[2];
+  } else {
+    member = activeMembers[member.id];
+    if (member == undefined) {
+      resp.error = response.errors[6];
+    } else {
+      channel = voiceChannels[member.channelId];
+      if (channel == undefined) {
+
+      } else {
+        resp.data = channel;
+        resp.error = response.errors[0];
+      }
+    }
+  }
+
+  res.end(JSON.stringify(resp));
 });
 
-let server = app.listen(pkg.config.port, pkg.config.hostname, function(){});
+let server = app.listen(pkg.config.port, pkg.config.hostname, function() {});

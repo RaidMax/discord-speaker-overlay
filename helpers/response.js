@@ -15,11 +15,19 @@ module.exports = {
 		},
 		{
 			code: 3,
-			message: 'member id already being followed'
+			message: 'member id is already registered'
 		},
 		{
 			code: 4,
 			message: 'no member is being followed'
+		},
+		{ 
+			code: 5,
+			message: 'member id not found in any guilds'
+		},
+		{
+			code: 6,
+			message: 'member not in voice channel'
 		}
 	],
 
