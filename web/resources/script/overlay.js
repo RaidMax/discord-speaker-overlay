@@ -1,4 +1,4 @@
-function loadSpeakers(id) {
+function loadSpeakers(memberid) {
 	const xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
@@ -17,7 +17,6 @@ function loadSpeakers(id) {
 			}
 		}
 	};
-	console.log(id);
-	xhttp.open('GET', `/api/member/${id}/channel`, true);
-	xhttp.send(); 
+	xhttp.open('GET', `/api/member/${memberid}/channel`, true);
+	xhttp.send();
 }

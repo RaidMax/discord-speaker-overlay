@@ -35,7 +35,7 @@ api.get('/register', (req, res) => res.render('register', {
 }));
 // overlay
 api.get('/overlay/:memberid', (req, res) => res.render('overlay', {
-	id: req.params.memberid
+	memberid: req.params.memberid
 }));
 
 module.exports = api;
