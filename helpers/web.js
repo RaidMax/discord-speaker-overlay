@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 
 const api = express();
-const server = api.listen(pkg.config.port, /*pkg.config.hostname*/ '192.168.1.26', function() {});
+const server = api.listen(pkg.config.port, pkg.config.hostname, function() {});
 
 api.engine('pug', require('pug').__express)
 api.set('view engine', 'pug');
