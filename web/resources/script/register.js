@@ -9,6 +9,7 @@ $(document).ready(function() {
 				modal.find('.alert').text(result.data);
 				modal.find('#registrationModalButton').text('Finish!');
 				modal.find('#registrationModalButton').addClass('btn-success');
+				modal.find('#registrationModalButton').attr('onclick', `window.open('/overlay/${memberID}')`);
 			} else {
 				modal.find('.alert').first().addClass('alert-danger');
 				modal.find('.alert').text(result.error.message);
