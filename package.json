@@ -17,13 +17,14 @@
   },
   "homepage": "https://github.com/RaidMax/discord-speaker-overlay#readme",
   "dependencies": {
-	"discord.js" : ">=11.2.1",
-	"express" : ">=4.16.2",
-	"ffmpeg-binaries" : ">=3.2.2",
-	"opusscript" : ">=0.0.4"
+    "discord.js": ">=11.2.1",
+    "express": ">=4.16.2",
+    "ffmpeg-binaries": ">=3.2.2",
+    "opusscript": ">=0.0.4",
+    "pug": "^2.0.0-rc.4"
   },
-  "config" : {
-	"hostname" : "localhost",
-	"port" : "80"
+  "config": {
+    "hostname": "localhost",
+    "port": "80"
   }
 }

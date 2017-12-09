@@ -1,0 +1,33 @@
+#content {
+	margin-top: 2em;
+	font-family: 'Segoe UI', 'Open Sans', sans-serif;
+}
+
+a.nav-link {
+	border-bottom: 1px rgba(0,0,0,0) solid;
+}
+a.nav-link:hover {
+	color: #fff!important;
+	border-bottom: 1px #fff solid;
+}
+
+.bg-primary .navbar-nav .active>.nav-link { 
+	color: #fff !important;
+	border-bottom: 1px #fff solid;
+}
+
+hr { 
+	border-color: #375a7f;
+}
+
+.embed-responsive, #content img {
+	border-radius: 0.25rem;
+	min-width: 100%;
+}
+
+#register-instructions h3 {
+}
+
+.font-alternative {
+	font-family: "Segoe UI Light", 'Open Sans', sans-serif;
+}

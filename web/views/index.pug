@@ -1,0 +1,17 @@
+extends layout.pug
+
+block title
+	title RaidMax::DiscordOverlay
+
+block content
+	.col-md-6
+		h2.text-success What is DiscordOverlay?
+		p DiscordOverlay is a #[a(href='https://nodejs.org' target="_blank") Node.js] project to provide a browser source overlay that displays currently speaking users in discord channels
+		h2.text-success How does it work?
+		p We provide a link registered to your #[a(href='https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-' target="_blank") Discord User ID]. This link displays the currently speaking members in your channel. You can then add the link to any streaming software that include browser sources.
+		h2.text-success I want it!
+		a(href='/register')
+			button.btn.btn-success.mb-3 Get Started!
+	.col-md-6
+		.embed-responsive.embed-responsive-16by9
+			iframe.embed-responsive-item(src='https://www.youtube-nocookie.com/embed/7BFytSpuAWs?rel=0&amp;controls=0&amp;showinfo=0' allowfullscreen)

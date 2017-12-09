@@ -1,0 +1,33 @@
+html
+	head
+		block title
+		block meta
+		link(rel='stylesheet' href='resources/css/bootstrap.min.css')
+		link(rel='stylesheet' href='resources/css/layout.css')
+		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=Open+Sans:300,400')
+		//link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css' integrity='sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ' crossorigin='anonymous')
+		script(src='https://code.jquery.com/jquery-3.2.1.min.js' integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=' crossorigin='anonymous')
+		script(src='https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js' integrity='sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb' crossorigin='anonymous')
+		script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js' integrity='sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn' crossorigin='anonymous')
+		block scriptIncludes
+	body
+		nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
+			.container
+				a.navbar-brand(href='../') DiscordOverlay
+				button.navbar-toggler(type='button', data-toggle='collapse' data-target='#navbarResponsive' aria-controls='navbarResponsive' aria-expanded='false' aria-label='Toggle navigation')
+					span.navbar-toggler-icon
+				.collapse.navbar-collapse#navbarResponsive
+					ul.navbar-nav.mr-auto
+						each page in pages
+							if page.title == currentPage
+								li.nav-item.active
+									a.nav-link(href=page.href) #{page.name}
+							else
+								li.nav-item
+									a.nav-link(href=page.href) #{page.name}
+		.container#content
+			block modal
+			.row
+				block content
+				.col-md-12
+					hr

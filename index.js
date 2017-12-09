@@ -3,8 +3,7 @@ const configuration = require('./helpers/configuration.js');
 const response = require('./helpers/response.js');
 const fileSystem = require('fs');
 const readline = require('readline');
-const express = require('express');
-const pkg = require('./package.json');
+const web = require('./helpers/web.js');
 
 const client = new discord.Client();
 const config = new configuration('./configuration.json');
@@ -164,15 +163,14 @@ function run() {
 
 setTimeout(run, 1000);
 
-let app = express();
-
 // register member to be followed
-app.get('/api/register/:memberid', function(req, res) {
+web.get('/api/register/:memberid', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   let member = undefined;
   const resp = response.generatePayload();
-
+  resp.error = response.errors[0];
+  
   if (config.getMember(req.params.memberid) != undefined) {
     resp.error = response.errors[3];
   } else {
@@ -188,9 +186,9 @@ app.get('/api/register/:memberid', function(req, res) {
     // add them to the saved config
     config.addMember(member);
     resp.error = response.errors[0];
-    resp.data = `now following ${member.displayName}`;
+    resp.data = `You are now registerd as ${member.displayName}!`;
     console.log(resp.data);
-  } else if (resp.error == response.errors[0]) {
+  } else if (resp.error.code == response.errors[0].code) {
     resp.error = response.errors[5];
   }
 
@@ -198,7 +196,7 @@ app.get('/api/register/:memberid', function(req, res) {
 });
 
 // get the overlay info
-app.get('/api/member/:memberid/channel', function(req, res) {
+web.get('/api/member/:memberid/channel', function(req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   let member = config.getMember(req.params.memberid);
@@ -225,5 +223,3 @@ app.get('/api/member/:memberid/channel', function(req, res) {
 
   res.end(JSON.stringify(resp));
 });
-
-let server = app.listen(pkg.config.port, pkg.config.hostname, function() {});
