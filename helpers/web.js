@@ -9,6 +9,7 @@ api.engine('pug', require('pug').__express)
 api.set('view engine', 'pug');
 api.set('views', path.join(__dirname, '../web/views'));
 api.use('/resources', express.static(path.join(__dirname, '../web/resources')));
+api.use(require('body-parser').json());
 
 const pages = {
 	'register': {
@@ -20,6 +21,11 @@ const pages = {
 		name: 'Source',
 		href: 'https://github.com/RaidMax/discord-speaker-overlay',
 		title: 'source'
+	},
+	'help': {
+		name: 'Help',
+		href: '/help',
+		title: 'help'
 	}
 }
 
@@ -36,6 +42,18 @@ api.get('/register', (req, res) => res.render('register', {
 // overlay
 api.get('/overlay/:memberid', (req, res) => res.render('overlay', {
 	memberid: req.params.memberid
+}));
+// overlay link
+api.get('/link/:memberid/:username', (req, res) => res.render('overlaylink', {
+	pages: pages,
+	username: req.params.username,
+	memberid: req.params.memberid,
+	hostname: pkg.config.hostname
+}));
+// help
+api.get('/help', (req,res) => res.render('help', {
+	pages: pages,
+	currentPage: 'help'
 }));
 
 module.exports = api;

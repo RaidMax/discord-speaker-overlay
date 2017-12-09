@@ -35,6 +35,7 @@ class Configuration {
 	addMember(member) {
 		this._configList[member.id] = {
 			id: member.id,
+			email: member.email,
 			added: new Date()
 		};
 		this.write();

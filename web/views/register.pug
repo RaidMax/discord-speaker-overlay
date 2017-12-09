@@ -7,7 +7,7 @@ block modal
 	.modal.fade#register-modal(tabindex='-1' role='dialog' aria-labelledby='register-modal-label' aria-hidden='true')
 		.modal-dialog(role='document')
 			.modal-content
-				.modal-header
+				//.modal-header
 					h5.modal-title#register-modal-label Registration Result
 					button(type='button' class='close' data-dismiss='modal' aria-label='Close')
 						span(aria-hidden='true') &times; 
@@ -17,33 +17,37 @@ block modal
 					button.btn#registrationModalButton(data-dismiss='modal') button
 
 block title
-	title DiscordOverlay::Register
+	title DiscordOverlay::Get Started
 
 block content
 	.col-md-12
-		h3 Let's get you started with DiscordOverlay!
+		h3.text-success Let's get you started with DiscordOverlay!
 		p First thing's first, we need to add our bot to your #[a(href='https://discordapp.com' target='_blank') Discord Guild].
-		a(href='https://discordapp.com/oauth2/authorize?&client_id=234879671580360734&scope=bot' target='_blank')
-			button.btn.btn-success.mb-3 Invite Now!
-		p.text-muted Remember, you must have the correct permissions to invite DiscordOverlay.
+			.row
+				.col-md-2
+					a(href='https://discordapp.com/oauth2/authorize?&client_id=234879671580360734&scope=bot' target='_blank')
+						button.btn.btn-lg.btn-block.btn-success Authorize Now!
+		p Next you need to find your #[a(href='https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-' target='_blank') User ID]. #[br] Finally, register to get your overlay link!
+		p.text-muted Remember, you must have the #[strong Manage Server] permission to invite DiscordOverlay.
 		hr
 	.col-md-6
+		h4.font-alternative.mb-3 #[span.text-success 1 &mdash;] Authorize DiscordOverlay
 		img.img-fluid.mb-3(src='/resources/image/register_1.jpg')
-		div.text-center.text-success Authorize our bot
 	.col-md-6
+		h4.font-alternative.mb-3 #[span.text-success 2 &mdash;] Find your User ID
 		.embed-responsive.embed-responsive-4by3.mb-3
-			video.embed-responsive-item(autoplay loop)
+			video.embed-responsive-item(autoplay loop poster='/resources/image/register_2_poster.png')
 				source(src='/resources/video/register_getid.webm' type='video/mp4')
-		div.text-center.text-success Find your User ID
+		
 	.col-md-12
-		hr
+		//hr
 	.col-md-12
 		#register-instructions
-			h4.font-alternative #[span.text-success 1 &mdash;] Select your server/guild from the list
-			h4.font-alternative #[span.text-success 2 &mdash;] Press #[strong authorize]
-			h4.font-alternative.mb-3 #[span.text-success 3 &mdash;] Find your User ID
+			h4.font-alternative.mb-3 #[span.text-success 3 &mdash;] Register
 		.row
 			.col-md-4
-				input.form-control.mb-3#register-user-id(placeholder='Enter User ID')
-				button.btn.btn-block.btn-success#register-button(data-toggle='modal' data-target='#register-modal') Register
+				form#register-form
+					input.form-control.mb-3#register-user-id(placeholder='Enter User ID')
+					input.form-control.mb-3#register-email(placeholder='Enter Email Addres')
+					button.btn.btn-lg.btn-block.btn-success#register-button(data-toggle='modal' data-target='#register-modal') Register
 			

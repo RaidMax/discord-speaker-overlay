@@ -164,19 +164,34 @@ function run() {
 setTimeout(run, 1000);
 
 // register member to be followed
-web.get('/api/register/:memberid', function(req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+web.post('/api/register', function(req, res) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  res.header('Content-Type', 'application/json');
   let member = undefined;
   const resp = response.generatePayload();
   resp.error = response.errors[0];
-  
-  if (config.getMember(req.params.memberid) != undefined) {
+  /**********validation*********/
+  if (req.body == undefined) {
+	resp.error = response.errors[2];
+	res.end(JSON.stringify(resp));
+	return;
+  } else if (req.body.email == undefined) {
+	resp.error = response.errors[7];
+	res.end(JSON.stringify(resp));
+	return;
+  } else if (req.body.id == undefined) {
+	resp.error = response.errors[2];
+	res.end(JSON.stringify(resp));
+	return;
+  }
+  /****************************/
+  if (config.getMember(req.body.id) != undefined) {
     resp.error = response.errors[3];
   } else {
     // find member in guilds
     client.guilds.some(function(guild) {
-      if ((member = guild.members.find(m => m.id == req.params.memberid)) != undefined) {
+      if ((member = guild.members.find(m => m.id == req.body.id)) != undefined) {
         return true;
       }
       return false;
@@ -184,9 +199,16 @@ web.get('/api/register/:memberid', function(req, res) {
   }
   if (member != undefined) {
     // add them to the saved config
-    config.addMember(member);
+    config.addMember({
+		id: member.id,
+		email: req.body.email
+	});
     resp.error = response.errors[0];
-    resp.data = `You are now registerd as ${member.displayName}!`;
+    resp.data = {
+		message:`You are now registered as ${member.displayName}!`,
+		username: member.displayName,
+		id: member.id
+	};
     console.log(resp.data);
   } else if (resp.error.code == response.errors[0].code) {
     resp.error = response.errors[5];
@@ -197,8 +219,8 @@ web.get('/api/register/:memberid', function(req, res) {
 
 // get the overlay info
 web.get('/api/member/:memberid/channel', function(req, res) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   let member = config.getMember(req.params.memberid);
   let channel = undefined;
 
