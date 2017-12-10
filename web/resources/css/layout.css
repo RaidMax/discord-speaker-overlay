@@ -31,3 +31,11 @@ hr {
 .font-alternative {
 	font-family: "Segoe UI Light", 'Open Sans', sans-serif;
 }
+
+.highlight-dark {
+	background-color: #f8f8f8;
+	padding: 0.1rem 0.4em;
+	color: #fb0505;
+	border-radius: 0.25rem;
+	font-family: "Consolas";
+}

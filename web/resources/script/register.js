@@ -22,7 +22,7 @@ $(document).ready(function() {
 			})
 			.done(function(result) {
 				if (result.error.code == 0) {
-					window.location.href = `/link/${result.data.id}/${result.data.username}`;
+					window.location.href = `/link/${result.data.id}`;
 				} else {
 					modal.find('.alert').first().addClass('alert-danger');
 					modal.find('.alert').text(`Error: ${result.error.message}`);

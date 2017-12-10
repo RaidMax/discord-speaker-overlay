@@ -1,15 +1,13 @@
 extends layout.pug
 
 block title
-	DiscordOverlay::Overlay Link
+	title DiscordOverlay::Overlay Link
 
 block content
 	- let url = `${hostname}/overlay/${memberid}`;
 	.col-md-6
 		h3.text-success Thanks for registering with DiscordOverlay!
-		p Your overlay link &mdash;  
-			code http://#{url} #[br]
-			span Your registered username &mdash; #[code #{username}]
+		p Your overlay link &mdash; #[span.highlight-dark http://#{url}] #[br] Your registered username &mdash; #[span.highlight-dark #{username}]
 		following
 		.row
 			.col-md-6

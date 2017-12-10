@@ -44,9 +44,9 @@ api.get('/overlay/:memberid', (req, res) => res.render('overlay', {
 	memberid: req.params.memberid
 }));
 // overlay link
-api.get('/link/:memberid/:username', (req, res) => res.render('overlaylink', {
+api.get('/link/:memberid', (req, res) => res.render('overlaylink', {
 	pages: pages,
-	username: req.params.username,
+	username: require('../index.js')[req.params.memberid].username,
 	memberid: req.params.memberid,
 	hostname: pkg.config.hostname
 }));

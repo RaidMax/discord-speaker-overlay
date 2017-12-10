@@ -17,6 +17,7 @@ client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
     // see if member is registered
     if (config.getMember(newMemberState.id) != undefined) {
       activeMembers[newMemberState.id] = {
+		username: newMemberState.displayName,
         id: newMemberState.id,
         channelId: 0
       };
@@ -95,7 +96,7 @@ client.on('guildMemberSpeaking', (member, speaking) => {
     voiceChannels[member.voiceChannel.id].speakers.push({
       id: member.id,
       name: member.displayName,
-      following: config.getMember(member.guild.id) != undefined
+      following: config.getMember(member.id) != undefined
     });
     // remove their speaking status
     // todo: a faster way
@@ -198,18 +199,30 @@ web.post('/api/register', function(req, res) {
     });
   }
   if (member != undefined) {
-    // add them to the saved config
-    config.addMember({
-		id: member.id,
-		email: req.body.email
-	});
+	const channelid = member.voiceChannel == undefined ? 0 : member.voiceChannel.id
+	// add them to activemembers if in a voice channel
+	activeMembers[member.id] = {
+		username: member.displayName,
+        id: member.id,
+        channelId: channelid
+    };
+	// set channel active
+	voiceChannels[channelid] = {
+          id: channelid,
+          speakers: []
+    };
+		
     resp.error = response.errors[0];
     resp.data = {
 		message:`You are now registered as ${member.displayName}!`,
 		username: member.displayName,
 		id: member.id
 	};
-    console.log(resp.data);
+	// add them to the saved config
+    config.addMember({
+		id: member.id,
+		email: req.body.email
+	});
   } else if (resp.error.code == response.errors[0].code) {
     resp.error = response.errors[5];
   }
@@ -245,3 +258,5 @@ web.get('/api/member/:memberid/channel', function(req, res) {
 
   res.end(JSON.stringify(resp));
 });
+
+module.exports = activeMembers;
