@@ -29,14 +29,21 @@ const pages = {
 	}
 }
 
+const description = 'DiscordOverlay is a Node.js project designed to provide a browser source overlay that displays currently speaking users in discord channels.';
+
+api.use((req, res, next) => {
+	res.locals.pages = pages;
+	res.locals.description = description;
+	res.locals.hostname = `https://${pkg.config.hostname}/`;
+	next();
+});
+
 // index
 api.get('/', (req, res) => res.render('index', { 
-	pages: pages,
 	currentPage: 'index'
 }));
 // register
 api.get('/register', (req, res) => res.render('register', {
-	pages: pages,
 	currentPage: 'register'
 }));
 // overlay
@@ -45,14 +52,12 @@ api.get('/overlay/:memberid', (req, res) => res.render('overlay', {
 }));
 // overlay link
 api.get('/link/:memberid', (req, res) => res.render('overlaylink', {
-	pages: pages,
-	username: require('../index.js')[req.params.memberid].username,
+	username: require('../index.js')[req.params.memberid].username | 'Error',
 	memberid: req.params.memberid,
 	hostname: pkg.config.hostname
 }));
 // help
 api.get('/help', (req,res) => res.render('help', {
-	pages: pages,
 	currentPage: 'help'
 }));
 

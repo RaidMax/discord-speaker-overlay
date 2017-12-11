@@ -1,5 +1,13 @@
 extends layout.pug
 
+block meta
+	- let desc = 'Get started with DiscordOverlay by authorizing our bot, finding your User ID, and registering!'
+	meta(property='og:title' content='DiscordOverlay::Register')
+	meta(property='og:type' content='website')
+	meta(property='og:image' content='/resources/image/overlay_speaker_green_small.png')
+	meta(property='og:description' content=desc)
+	meta(property='og:url' content=hostname + currentPage)
+
 block scriptIncludes
 	script(src='/resources/script/register.js')
 	
@@ -7,10 +15,9 @@ block modal
 	.modal.fade#register-modal(tabindex='-1' role='dialog' aria-labelledby='register-modal-label' aria-hidden='true')
 		.modal-dialog(role='document')
 			.modal-content
-				//.modal-header
-					h5.modal-title#register-modal-label Registration Result
-					button(type='button' class='close' data-dismiss='modal' aria-label='Close')
-						span(aria-hidden='true') &times; 
+				h5.modal-title#register-modal-label Registration Result
+				button(type='button' class='close' data-dismiss='modal' aria-label='Close')
+					span(aria-hidden='true') &times; 
 				.modal-body
 					.alert.mb-0
 				.modal-footer
