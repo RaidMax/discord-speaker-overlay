@@ -55,3 +55,7 @@ code {
 	vertical-align: middle;
 }
 
+.modal-footer button {
+	background-color: #dddddd;
+}
+

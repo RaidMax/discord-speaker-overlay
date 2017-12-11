@@ -7,7 +7,7 @@ $(document).ready(function() {
 		let registerForm = $('#register-form');
 		if (memberID == "" || memberEmail == "") {
 			modal.find('.alert').first().addClass('alert-danger');
-			modal.find('.alert').first().text('Please fill out both forms');
+			modal.find('.alert').first().text('Please fill out both forms.');
 			modal.find('#registrationModalButton').text('Retry');
 		} else {
 			$.ajax({
@@ -25,7 +25,7 @@ $(document).ready(function() {
 					window.location.href = `/link/${result.data.id}`;
 				} else {
 					modal.find('.alert').first().addClass('alert-danger');
-					modal.find('.alert').text(`Error: ${result.error.message}`);
+					modal.find('.alert').text(`Error: ${result.error.message}.`);
 					modal.find('#registrationModalButton').text('Retry');
 					modal.find('#registrationModalButton').removeClass('btn-success');
 				}
