@@ -31,6 +31,7 @@ const pages = {
 
 const description = 'DiscordOverlay is a Node.js project designed to provide a browser source overlay that displays currently speaking users in discord channels.';
 
+api.locals.pretty = true;
 api.use((req, res, next) => {
 	res.locals.pages = pages;
 	res.locals.description = description;
