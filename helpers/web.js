@@ -53,7 +53,7 @@ api.get('/overlay/:memberid', (req, res) => res.render('overlay', {
 }));
 // overlay link
 api.get('/link/:memberid', (req, res) => res.render('overlaylink', {
-	username: require('../index.js')[req.params.memberid].username | 'Error',
+	username: require('../index.js').findMember(req.params.memberid).displayName,
 	memberid: req.params.memberid,
 	hostname: pkg.config.hostname
 }));

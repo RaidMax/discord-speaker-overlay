@@ -15,9 +15,9 @@ block modal
 	.modal.fade#register-modal(tabindex='-1' role='dialog' aria-labelledby='register-modal-label' aria-hidden='true')
 		.modal-dialog(role='document')
 			.modal-content
-				h5.modal-title#register-modal-label Registration Result
-				button(type='button' class='close' data-dismiss='modal' aria-label='Close')
-					span(aria-hidden='true') &times; 
+				.modal-header
+					button(type='button' class='close' data-dismiss='modal' aria-label='Close')
+						span(aria-hidden='true') &times; 
 				.modal-body
 					.alert.mb-0
 				.modal-footer

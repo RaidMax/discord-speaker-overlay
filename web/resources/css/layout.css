@@ -7,8 +7,12 @@ a.nav-link {
 	border-bottom: 1px rgba(0,0,0,0) solid;
 }
 a.nav-link:hover {
-	color: #fff!important;
+	color: #fff !important;
 	border-bottom: 1px #fff solid;
+}
+
+a.nav-link:focus {
+	color: #fff !important;
 }
 
 .bg-primary .navbar-nav .active>.nav-link { 

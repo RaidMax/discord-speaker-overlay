@@ -162,6 +162,18 @@ function run() {
   }
 }
 
+//todo: make this faster
+function findMember(memberId) {
+	let member = undefined;
+	client.guilds.some(function(guild) {
+      if ((member = guild.members.find(m => m.id == memberId)) != undefined) {
+        return true;
+      }
+      return false;
+    });
+	return member;
+}
+
 setTimeout(run, 1000);
 
 // register member to be followed
@@ -191,16 +203,11 @@ web.post('/api/register', function(req, res) {
     resp.error = response.errors[3];
   } else {
     // find member in guilds
-    client.guilds.some(function(guild) {
-      if ((member = guild.members.find(m => m.id == req.body.id)) != undefined) {
-        return true;
-      }
-      return false;
-    });
+    member = findMember(req.body.id);
   }
   if (member != undefined) {
 	const channelid = member.voiceChannel == undefined ? 0 : member.voiceChannel.id
-	// add them to activemembers if in a voice channel
+	// add them to activeMembers if in a voice channel
 	activeMembers[member.id] = {
 		username: member.displayName,
         id: member.id,
@@ -259,4 +266,7 @@ web.get('/api/member/:memberid/channel', function(req, res) {
   res.end(JSON.stringify(resp));
 });
 
-module.exports = activeMembers;
+module.exports = {
+	members: activeMembers,
+	findMember: findMember
+}
