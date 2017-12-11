@@ -5,15 +5,19 @@ block title
 
 block content
 	.col-md-6
+		img.img-responsive(style='height: 4em' src='resources/image/overlay_speaker_green_small.png')
+		span.brand-text.ml-2 DiscordOverlay
+		.mb-3
 		h2.text-success What is DiscordOverlay?
 		p DiscordOverlay is a #[a(href='https://nodejs.org' target="_blank") Node.js] project designed to provide a browser source overlay that displays currently speaking users in discord channels.
 		h2.text-success How does it work?
 		p We provide a link registered to your #[a(href='https://support.discordapp.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-' target="_blank") Discord User ID]. This link displays the currently speaking members in your channel. You can then add the link to any streaming software that includes browser sources.
-		h2.text-success I want it!
 		.row
 			.col-md-6
 				a(href='/register')
-					button.btn.btn-lg.btn-block.btn-success.mb-3 Get Started!
+					button.btn.btn-block.btn-success.mb-3 Get Started!
 	.col-md-6
-		.embed-responsive.embed-responsive-16by9
-			iframe.embed-responsive-item(src='https://www.youtube-nocookie.com/embed/nIdl9fIujf0?rel=0&amp;controls=0&amp;showinfo=0' allowfullscreen)
+		.embed-responsive.embed-responsive-16by9.mb-3
+			video.embed-responsive-item(autoplay loop)
+				source(src='/resources/video/overlay_example.mp4' type='video/mp4')
+		.mt-3.text-muted.text-center #[strong DiscordOverlay] in action

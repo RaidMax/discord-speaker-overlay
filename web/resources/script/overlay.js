@@ -10,7 +10,7 @@ function loadSpeakers(memberid) {
 			{
 				let html = '';
 				speakerResponse.data.speakers.forEach(function(speaker) {
-					let followDiv = (speaker.following) ? `<div class="following">★</div>` : '';
+					let followDiv = (speaker.id == memberid) ? `<div class="following">★</div>` : '';
 					html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
 				});
 				document.getElementById('speakers').innerHTML = html;

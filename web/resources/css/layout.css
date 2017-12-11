@@ -20,9 +20,10 @@ hr {
 	border-color: #375a7f;
 }
 
-.embed-responsive, #content img {
-	border-radius: 0.25rem;
+.embed-responsive, #content img.full-width {
+	border-radius: 0.5rem;
 	min-width: 100%;
+	max-width: 100%;
 }
 
 #register-instructions h3 {
@@ -32,10 +33,21 @@ hr {
 	font-family: "Segoe UI Light", 'Open Sans', sans-serif;
 }
 
-.highlight-dark {
-	background-color: #f8f8f8;
-	padding: 0.1rem 0.4em;
-	color: #fb0505;
-	border-radius: 0.25rem;
-	font-family: "Consolas";
+code {
+	word-wrap: break-word;
 }
+
+.navbar img {
+	vertical-align: top;
+}
+
+.navbar-brand {
+	font-weight: bold;
+}
+
+.brand-text {
+	font-size: 1.875rem;
+	font-weight: bold;
+	vertical-align: middle;
+}
+
