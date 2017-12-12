@@ -15,7 +15,7 @@ html
 		script(src='/resources/script/layout.js')
 		block scriptIncludes
 	body
-		.modal.fade#findid-modal(tabindex='-1' role='dialog' aria-labelledby='findid-modal-label' aria-hidden='true')
+		.modal.fade#findid-modal(tabindex='-1' role='dialog' aria-hidden='true')
 			.modal-dialog(role='document')
 				.modal-content
 					.modal-header
@@ -23,7 +23,7 @@ html
 						button(type='button' class='close' data-dismiss='modal' aria-label='Close')
 							span(aria-hidden='true') &times; 
 					.modal-body
-						.alert.alert-danger.pb-2.pt-2(style='display: none;')
+						.alert.alert-danger.pb-2.pt-2.hidden
 						input.form-control#findid-modalinput(placeholder='Enter Email Address')
 					.modal-footer
 						button.btn.btn-success#findidModalButton Find
@@ -52,4 +52,4 @@ html
 					hr
 		footer
 			p.mb-0.text-muted.text-center Developed by #[strong RaidMax]
-			p.text-center(style='color: rgba(255, 255, 255, 0.1);') This website and provided service(s) are not endorsed or created by Discord.
+			p.text-center.text-muted-muted This website and provided service(s) are not endorsed or created by Discord.

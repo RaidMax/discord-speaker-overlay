@@ -59,3 +59,19 @@ code {
 	background-color: #dddddd;
 }
 
+.btn a {
+	color: #fff;
+	text-decoration: none;
+}
+
+.hidden {
+	display: none;
+}
+
+.text-muted-muted {
+	color: rgba(255, 255, 255, 0.1);
+}
+
+.img-brand {
+	height: 4em
+}

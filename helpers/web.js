@@ -91,6 +91,12 @@ module.exports.run = function(index) {
 	// api get member
 	api.post('/api/find', index.getMember);
 	
+	// robots.txt
+	api.get('/robots.txt', function(req, res) {
+		res.type('text/plain');
+		res.send('User-agent: *\nDisallow:');
+	});
+	
 	// 404 handling
 	api.get('*', function(req, res) {
 		res.status(404);
