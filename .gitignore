@@ -6,7 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Config
-configuration.json
+/configuration.json
 
 # Runtime data
 pids

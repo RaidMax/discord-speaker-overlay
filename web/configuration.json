@@ -1,0 +1,15 @@
+{
+	"configDevelopment": {
+		"domain": "192.168.1.26",
+		"hostname": "192.168.1.26",
+		"port": 80,
+		"https": false
+	},
+	"configProduction": {
+		"domain": "overlay.raidmax.org",
+		"hostname": "192.159.65.156",
+		"port": 80,
+		"https": true
+	}
+}
+		
