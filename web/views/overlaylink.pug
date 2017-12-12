@@ -5,11 +5,11 @@ block title
 
 block content
 	- let url = `${hostname}overlay/${memberid}`;
-	.col-md-6
+	.col-md-12
 		h3.text-success Thanks for registering with DiscordOverlay!
 		p Your overlay link &mdash; #[code #{url}] #[br] Your registered username &mdash; #[code #{username}]
 		following
 		.row
-			.col-md-6
+			.col-md-3
 				a(href=`${url}` target='_blank')
 					button.btn.btn-lg.btn-block.btn-success Let me see!

@@ -74,7 +74,6 @@ class Configuration {
 	}
 	
 	getToken() {
-		console.log(this._configList['token']);
 		return this._configList['token'];
 	}
 	
