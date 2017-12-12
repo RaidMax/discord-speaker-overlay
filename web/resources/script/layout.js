@@ -7,6 +7,12 @@ $(document).ready(function() {
 		const modal = $('#findid-modal');
 		const email = $('#findid-modalinput').val();
 		
+		if(email == '') {
+			modal.find('.alert').text('Please enter your email address.');
+			modal.find('.alert').fadeIn('fast');
+			return false;
+		}
+		
 		$.ajax({
 				url: '/api/find', 
 			type: 'POST',

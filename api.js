@@ -2,7 +2,6 @@ const discord = require('discord.js');
 const configuration = require('./helpers/configuration.js');
 const response = require('./helpers/response.js');
 const fileSystem = require('fs');
-const readline = require('readline');
 const client = new discord.Client();
 const config = new configuration('./configuration.json');
 
@@ -94,7 +93,6 @@ client.on('guildMemberSpeaking', (member, speaking) => {
     voiceChannels[member.voiceChannel.id].speakers.push({
       id: member.id,
       name: member.displayName,
-      following: config.getMember(member.id) != undefined
     });
     // remove their speaking status
     // todo: a faster way
@@ -143,6 +141,8 @@ function joinDefaultChannel(guild) {
 
 module.exports = {
 	members: activeMembers,
+	client: client,
+	config: config
 }
 
 //todo: make this faster
@@ -264,22 +264,3 @@ module.exports.getMember = function(req, res){
   
   res.end(JSON.stringify(resp)); 
 };
-
-// start the bot 
-module.exports.run = function() {
-  let token = config.getToken();
-  if (token) {
-    client.login(token);
-  } else {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-
-    rl.question('Enter your discord api token: ', (tk) => {
-      config.setToken(tk);
-      rl.close();
-      run();
-    });
-  }
-}

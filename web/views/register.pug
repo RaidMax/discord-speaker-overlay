@@ -7,6 +7,8 @@ block meta
 	meta(property='og:image' content='/resources/image/overlay_speaker_green_small.png')
 	meta(property='og:description' content=desc)
 	meta(property='og:url' content=hostname + currentPage)
+	meta(name='keywords' content='DiscordOverlay, register, get-started, RaidMax')
+	meta(name='description' content=desc)
 
 block scriptIncludes
 	script(src='/resources/script/register.js')
@@ -16,6 +18,7 @@ block modal
 		.modal-dialog(role='document')
 			.modal-content
 				.modal-header
+					span Registration failed!
 					button(type='button' class='close' data-dismiss='modal' aria-label='Close')
 						span(aria-hidden='true') &times; 
 				.modal-body

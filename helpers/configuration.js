@@ -15,7 +15,6 @@ class Configuration {
 		}
 		else {
 			config._configList = JSON.parse(data);
-			console.log('Read configuration from disk');
 		}
 	}
 	

@@ -27,7 +27,7 @@ module.exports = {
 		},
 		{
 			code: 6,
-			message: 'member not in monitored voice channel'
+			message: 'not in voice channel'
 		},
 		{
 			code: 7,

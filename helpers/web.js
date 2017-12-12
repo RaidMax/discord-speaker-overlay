@@ -13,7 +13,7 @@ const configuration = function() {
 const pages = {
 	'register': {
 		name: 'Get Started',
-		href: '/register',
+		href: '/register/',
 		title: 'register'
 	},	
 	'source': {
@@ -23,7 +23,7 @@ const pages = {
 	},
 	'help': {
 		name: 'Help',
-		href: '/help',
+		href: '/help/',
 		title: 'help'
 	}
 }
