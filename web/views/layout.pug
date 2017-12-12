@@ -15,6 +15,18 @@ html
 		script(src='/resources/script/layout.js')
 		block scriptIncludes
 	body
+		.modal.fade#findid-modal(tabindex='-1' role='dialog' aria-labelledby='findid-modal-label' aria-hidden='true')
+			.modal-dialog(role='document')
+				.modal-content
+					.modal-header
+						span Find your overlay link
+						button(type='button' class='close' data-dismiss='modal' aria-label='Close')
+							span(aria-hidden='true') &times; 
+					.modal-body
+						.alert.alert-danger.pb-2.pt-2(style='display: none;')
+						input.form-control#findid-modalinput(placeholder='Enter Email Address')
+					.modal-footer
+						button.btn.btn-success#findidModalButton Find
 		nav.navbar.navbar-expand-lg.navbar-dark.bg-primary
 			.container
 				a.navbar-brand(href='../') DiscordOverlay
@@ -31,7 +43,7 @@ html
 									a.nav-link(href=page.href) #{page.name}
 					ul.nav.navbar-nav.ml-auto
 						li.nav-item
-							a.nav-link(href='#') Where's my overlay?
+							a.nav-link(href='#' data-toggle='modal' data-target='#findid-modal') Where's my overlay?
 		.container#content
 			block modal
 			.row

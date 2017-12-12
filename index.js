@@ -266,6 +266,25 @@ web.get('/api/member/:memberid/channel', function(req, res) {
   res.end(JSON.stringify(resp));
 });
 
+// get by email
+web.post('/api/find', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  res.header('Content-Type', 'application/json');
+  
+  const resp = response.generatePayload();
+  const member = config.getMemberByEmail(req.body.email);
+  if (member == undefined) {
+	resp.error = response.errors[5];
+  } else {
+	resp.error = response.errors[0];
+	resp.data = config.getMember(member);
+  }
+  
+  res.end(JSON.stringify(resp)); 
+});
+
+
 module.exports = {
 	members: activeMembers,
 	findMember: findMember

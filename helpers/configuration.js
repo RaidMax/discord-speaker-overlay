@@ -45,6 +45,11 @@ class Configuration {
 		return this._configList[memberId];
 	}
 	
+	getMemberByEmail(memberEmail) {
+		return Object.keys(this._configList)
+			.find(c => c != 'token' && this._configList[c].email.toLowerCase() == memberEmail.toLowerCase());
+	}
+	
 	getMembers() {
 		return this._configList
 	}
