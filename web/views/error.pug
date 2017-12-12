@@ -1,0 +1,10 @@
+extends layout.pug
+
+block title
+	title DiscordOverlay::Oops
+	
+block content
+	.col-md-12
+		h3 #{status} &mdash; #{message}
+		p.mb-0.text-muted Sorry we couldn't complete your request :(
+		span.text-danger #{error}

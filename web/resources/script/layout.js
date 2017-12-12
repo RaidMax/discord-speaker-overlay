@@ -22,12 +22,12 @@ $(document).ready(function() {
 				window.location.href = `/link/${result.data.id}`;
 			} else {
 				modal.find('.alert').text(`Error: ${result.error.message}.`);
-				modal.find('.alert').show();
+				modal.find('.alert').fadeIn('fast');
 			}
 		})
 		.fail(function() {
-			mmodal.find('.alert').text('Error: api could not complete your request.');
-			modal.find('.alert').show();
+			modal.find('.alert').text('Error: api could not complete your request.');
+			modal.find('.alert').fadeIn('fast');
 		});
 	});
 });
