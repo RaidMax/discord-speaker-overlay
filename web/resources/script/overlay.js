@@ -13,7 +13,7 @@ function loadSpeakers(memberid) {
 				});
 				document.getElementById('speakers').innerHTML = html;
 			} else {
-				document.getElementById('speakers').innerHTML = 'An unknown error occurred;
+				document.getElementById('speakers').innerHTML = 'An unknown error occurred';
 			}
 		}
 	};
