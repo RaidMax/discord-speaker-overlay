@@ -24,4 +24,4 @@ function run() {
 setTimeout(function() {
 	web.run(api);
 	run();
-}, 0);
+}, 1000);
