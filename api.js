@@ -5,8 +5,8 @@ const fileSystem = require('fs');
 const client = new discord.Client();
 const config = new configuration('./configuration.json');
 
-let voiceChannels = [];
-let activeMembers = [];
+let voiceChannels = {};
+let activeMembers = {};
 
 client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
   // no member was found
@@ -16,7 +16,7 @@ client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
       activeMembers[newMemberState.id] = {
 		username: newMemberState.displayName,
         id: newMemberState.id,
-        channelId: 0
+        channelId: (newMemberState.voiceChannel == null) ? 0 : newMemberState.voiceChannel.id
       };
       console.log(`${newMemberState.displayName} is now active`);
     }
@@ -29,7 +29,7 @@ client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
       if (newMemberState.voiceChannel != undefined) {
         voiceChannels[newMemberState.voiceChannel.id] = {
           id: newMemberState.voiceChannel.id,
-          speakers: []
+          speakers: {}
         };
         // set voice channel id for member
         activeMembers[newMemberState.id].channelId = newMemberState.voiceChannel.id;
@@ -42,15 +42,14 @@ client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
       if (newMemberState.voiceChannel != undefined) {
         // no other registered member is in the channel
         if (Object.keys(activeMembers).find(m => activeMembers[m].channelId == oldMemberState.voiceChannel.id) == undefined) {
-          // remove the old voice channel
-          voiceChannels = voiceChannels.filter(function(channel) {
-            return channel.id != oldMemberState.voiceChannel.id;
-          });
+			// remove the old voice channel
+			console.log(`[switching] removing unmonitored channel ${oldMemberState.voiceChannel.name}`);
+			delete voiceChannels[oldMemberState.voiceChannel.id];
         }
         // add new monitored voice channel
         voiceChannels[newMemberState.voiceChannel.id] = {
           id: newMemberState.voiceChannel.id,
-          speakers: []
+          speakers: {}
         };
         // set voice channel id for member
         activeMembers[newMemberState.id].channelId = newMemberState.voiceChannel.id;
@@ -61,15 +60,11 @@ client.on('voiceStateUpdate', (oldMemberState, newMemberState) => {
         // no other registered member is in the channel
         if (Object.keys(activeMembers).find(m => activeMembers[m].channelId == oldMemberState.voiceChannel.id) == undefined) {
           // remove the old voice channel
-          voiceChannels = voiceChannels.filter(function(channel) {
-            return channel.id != oldMemberState.voiceChannel.id;
-          });
+		  console.log(`[disconnecting] removing unmonitored channel ${oldMemberState.voiceChannel.name}`);
+		  delete voiceChannels[oldMemberState.voiceChannel.id];
         }
-
-        activeMembers = activeMembers.filter(function(member) {
-          return member.id != newMemberState.id;
-        });
-
+		
+		delete activeMembers[newMemberState.id];
         console.log(`${newMemberState.displayName} disconnected from ${oldMemberState.voiceChannel.name}`);
       }
     }
@@ -90,16 +85,14 @@ client.on('guildMemberSpeaking', (member, speaking) => {
 
   // set speaking status to voice channel
   if (speaking) {
-    voiceChannels[member.voiceChannel.id].speakers.push({
+    voiceChannels[member.voiceChannel.id].speakers[member.id] = {
       id: member.id,
       name: member.displayName,
-    });
-    // remove their speaking status
-    // todo: a faster way
+    };
+  // remove their speaking status
+  // todo: a faster way
   } else {
-    voiceChannels[member.voiceChannel.id].speakers = voiceChannels[member.voiceChannel.id].speakers.filter(function(c) {
-      return c.id != member.id
-    });
+	delete voiceChannels[member.voiceChannel.id].speakers[member.id];
   }
 });
 
@@ -224,7 +217,6 @@ module.exports.getOverlay = function(req, res) {
   res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   let member = config.getMember(req.params.memberid);
   let channel = undefined;
-
   const resp = response.generatePayload();
 
   if (member == undefined) {
@@ -234,9 +226,9 @@ module.exports.getOverlay = function(req, res) {
     if (member == undefined) {
       resp.error = response.errors[6];
     } else {
-      channel = voiceChannels[member.channelId];
+	  channel = voiceChannels[member.channelId];
       if (channel == undefined) {
-
+		resp.error = response.errors[6];
       } else {
         resp.data = channel;
         resp.error = response.errors[0];

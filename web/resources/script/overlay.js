@@ -7,9 +7,9 @@ function loadSpeakers(memberid) {
 				document.getElementById('speakers').innerHTML = `<div><span class="speaker">${speakerResponse.error.message}</span></div>`;
 			} else if(speakerResponse.data != undefined) {
 				let html = '';
-				speakerResponse.data.speakers.forEach(function(speaker) {
-					let followDiv = (speaker.id == memberid) ? `<div class="following">★</div>` : '';
-					html += `<div>${followDiv}🔊<span class="speaker">${speaker.name}</span></div>`;
+				Object.keys(speakerResponse.data.speakers).forEach(function(key) {
+					let followDiv = (speakerResponse.data.speakers[key].id == memberid) ? `<div class="following">★</div>` : '';
+					html += `<div>${followDiv}🔊<span class="speaker">${speakerResponse.data.speakers[key].name}</span></div>`;
 				});
 				document.getElementById('speakers').innerHTML = html;
 			} else {
